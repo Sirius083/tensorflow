@@ -22,16 +22,17 @@ enqueue_op = q.enqueue_many(x_input_data)
 # To leverage multi-threading we create a "QueueRunner"
 # that will handle the "enqueue_op" outside of the main thread
 # We don't need much parallelism here, so we will use only 1 thread
-numberOfThreads = 3 
+numberOfThreads = 1 
 qr = tf.train.QueueRunner(q, [enqueue_op] * numberOfThreads)
 # Don't forget to add your "QueueRunner" to the QUEUE_RUNNERS collection
 tf.train.add_queue_runner(qr) 
 
-input_ = q.dequeue() 
+input_ = q.dequeue()
+# return: tensor(same type of input tensors)
 input_ = tf.Print(input_, data=[q.size(), input_], message="Nb elements left, input:")
 
 # fake graph: START
-y = input_ + 1
+y = input_ + 1 
 # fake graph: END 
 
 # We start the session as usual ...
