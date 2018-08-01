@@ -1,5 +1,5 @@
 # code from https://github.com/adventuresinML/adventures-in-ml-code/blob/master/tf_queuing.py
-
+# post from: http://adventuresinmachinelearning.com/introduction-tensorflow-queuing/
 def cifar_shuffle_batch():
     batch_size = 128
     num_threads = 16
@@ -15,6 +15,11 @@ def cifar_shuffle_batch():
     # setup minimum number of examples that can remain in the queue after dequeuing before blocking
     # occurs (i.e. enqueuing is forced) - the higher the number the better the mixing but
     # longer initial load time
+    '''
+    If, after a dequeuing operation, the number of examples or samples in the queue falls below this value 
+    it will block any further dequeuing until more samples are added to the queue. 
+    In other words, it will force an enqueuing operation. 
+    '''
     min_after_dequeue = 10000
     # setup the capacity of the queue - this is based on recommendations by TensorFlow to ensure
     # good mixing
@@ -57,11 +62,80 @@ def cifar_shuffle_queue_batch(image, label, batch_size, capacity, min_after_dequ
     tensor_list = [image, label]
     dtypes = [tf.float32, tf.int32]
     shapes = [image.get_shape(), label.get_shape()]
+    # Note: diff: RandomShuffleQueue dequeues elements in a random manner.
     q = tf.RandomShuffleQueue(capacity=capacity, min_after_dequeue=min_after_dequeue,
                               dtypes=dtypes, shapes=shapes)
     enqueue_op = q.enqueue(tensor_list)
     # add to the queue runner
     tf.train.add_queue_runner(tf.train.QueueRunner(q, [enqueue_op] * threads))
     # now extract the batch
-    image_batch, label_batch = q.dequeue_many(batch_size)
+    image_batch, label_batch = q.dequeue_many(batch_size) # !!! dequeue elements not by order
     return image_batch, label_batch
+
+
+def read_data(file_q):
+    # Code from https://github.com/tensorflow/models/blob/master/tutorials/image/cifar10/cifar10_input.py
+    class CIFAR10Record(object):
+        pass
+
+    result = CIFAR10Record()
+
+    # Dimensions of the images in the CIFAR-10 dataset.
+    # See http://www.cs.toronto.edu/~kriz/cifar.html for a description of the
+    # input format.
+    label_bytes = 1  # 2 for CIFAR-100
+    result.height = 32
+    result.width = 32
+    result.depth = 3
+    image_bytes = result.height * result.width * result.depth
+    # Every record consists of a label followed by the image, with a
+    # fixed number of bytes for each.
+    record_bytes = label_bytes + image_bytes
+
+    # Read a record, getting filenames from the filename_queue.  No
+    # header or footer in the CIFAR-10 format, so we leave header_bytes
+    # and footer_bytes at their default of 0.
+    
+    '''
+    Note:
+    Of particular note is that this reader also implicitly handles the dequeuing operation from file_q (our filename queue).  
+    So we don’t have to worry about explicitly dequeuing from our filename queue.  
+    The reader will also parse the files it dequeues and return the image data.  
+    '''
+    reader = tf.FixedLengthRecordReader(record_bytes=record_bytes)
+    result.key, value = reader.read(file_q)
+
+    # Convert from a string to a vector of uint8 that is record_bytes long.
+    record_bytes = tf.decode_raw(value, tf.uint8)
+
+    # The first bytes represent the label, which we convert from uint8->int32.
+    result.label = tf.cast(
+        tf.strided_slice(record_bytes, [0], [label_bytes]), tf.int32)
+
+    # The remaining bytes after the label represent the image, which we reshape
+    # from [depth * height * width] to [depth, height, width].
+    depth_major = tf.reshape(
+        tf.strided_slice(record_bytes, [label_bytes],
+                         [label_bytes + image_bytes]),
+        [result.depth, result.height, result.width])
+    # Convert from [depth, height, width] to [height, width, depth].
+    result.uint8image = tf.transpose(depth_major, [1, 2, 0])
+
+    reshaped_image = tf.cast(result.uint8image, tf.float32)
+
+    height = 24
+    width = 24
+
+    # Image processing for evaluation.
+    # Crop the central [height, width] of the image.
+    resized_image = tf.image.resize_image_with_crop_or_pad(reshaped_image,
+                                                           height, width)
+
+    # Subtract off the mean and divide by the variance of the pixels.
+    float_image = tf.image.per_image_standardization(resized_image)
+
+    # Set the shapes of tensors.
+    float_image.set_shape([height, width, 3])
+    result.label.set_shape([1])
+
+    return float_image, result.label
