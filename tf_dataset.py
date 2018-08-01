@@ -14,8 +14,8 @@ Created on Tue Jul 31 17:19:32 2018
 
 import tensorflow as tf
 dataset = dataset.map(map_func = parse_fn) 
-# num_parallel_calls: task manager 中CPU的 Logical processors
-# batch: 不同的picture同时预处理 
+# num_parallel_calls: task manager: CPU: Logical processors
+# batch: preprocessing different pictures at the same time
 dataset = dataset.map(map_func = parse_fn, num_parallel_calls = FLAGS.num_parallel_calls)
 dataset = dataset.batch(batch_size = FLAGS.batch_size)
 
