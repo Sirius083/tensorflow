@@ -78,6 +78,9 @@ for batch in dataset:
     mean_list.append(tmp)
     print(count, tmp)
 
+# takes about two minutes
+ml = np.array(mean_list) # change list to np.array
+ml_mean = np.mean(ml,axis =0) # calculate mean
 
 '''
 # Using for loop: too slow(take 15 hours, to 20000 step)
