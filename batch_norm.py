@@ -90,6 +90,6 @@ with tf.name_scope('loss'):
 # run train and evaluate in the same session
 is_training = tf.placeholder(dtype=tf.bool)
 _, acc, loss = sess.run([train_op, accuracy, loss], {is_training:True}) 
-if step % 100 == 0: # 在测试时不需要sess.run(train_op)
+if step % 100 == 0: # do not need sess.run(train_op) in test step
 val_acc, val_loss = sess.run([accuracy, loss], {is_training: False})
 '''
