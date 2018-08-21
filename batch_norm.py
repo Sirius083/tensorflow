@@ -85,3 +85,11 @@ with tf.name_scope('accuracy'):
 with tf.name_scope('loss'):
     loss = tf.reduce_mean(
         tf.nn.softmax_cross_entropy_with_logits(logits, y))
+    
+'''
+# run train and evaluate in the same session
+is_training = tf.placeholder(dtype=tf.bool)
+_, acc, loss = sess.run([train_op, accuracy, loss], {is_training:True}) 
+if step % 100 == 0: # 在测试时不需要sess.run(train_op)
+val_acc, val_loss = sess.run([accuracy, loss], {is_training: False})
+'''
