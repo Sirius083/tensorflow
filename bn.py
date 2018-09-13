@@ -29,13 +29,13 @@ with tf.Session() as sess:
 
 '''
 all variables ===========
-<tf.Variable 'batch_normalization/gamma:0' shape=(64,) dtype=float32_ref>
-<tf.Variable 'batch_normalization/beta:0' shape=(64,) dtype=float32_ref>
-<tf.Variable 'batch_normalization/moving_mean:0' shape=(64,) dtype=float32_ref>
-<tf.Variable 'batch_normalization/moving_variance:0' shape=(64,) dtype=float32_ref>
+<tf.Variable 'batch_normalization/gamma:0' shape=(200,) dtype=float32_ref>
+<tf.Variable 'batch_normalization/beta:0' shape=(200,) dtype=float32_ref>
+<tf.Variable 'batch_normalization/moving_mean:0' shape=(200,) dtype=float32_ref>
+<tf.Variable 'batch_normalization/moving_variance:0' shape=(200,) dtype=float32_ref>
 all trainable variables ===========
-<tf.Variable 'batch_normalization/gamma:0' shape=(64,) dtype=float32_ref>
-<tf.Variable 'batch_normalization/beta:0' shape=(64,) dtype=float32_ref>
+<tf.Variable 'batch_normalization/gamma:0' shape=(200,) dtype=float32_ref>
+<tf.Variable 'batch_normalization/beta:0' shape=(200,) dtype=float32_ref>
 '''
 
 '''
