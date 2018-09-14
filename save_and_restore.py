@@ -17,6 +17,10 @@ checkpoint: parameters        --> .data-00000-of-00001 & .index
 import tensorflow as tf
 import os
 
+
+# Note: restore时需要写ckpt的完整路径
+# saver.restore(sess, test_ckpt_path) # model.ckpt-60000 不用加后面的 .meta 或者.index
+
 # =============================================================================
 # save model variables
 # Create some variables.
