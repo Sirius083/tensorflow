@@ -4,7 +4,8 @@ Created on Fri Nov  9 16:38:30 2018
 
 @author: Sirius
 
-用2015版本训练的模型
+用tensorflow官网2016年pre-trained模型
+无法得到正常结果
 """
 '''
 import tensorflow as tf
