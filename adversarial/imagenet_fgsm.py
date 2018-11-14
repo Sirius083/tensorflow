@@ -81,4 +81,31 @@ with model.graph.as_default():
             predictions = np.squeeze(predictions)
             print_scores(predictions)
             print('\n')
+    # ================================================
+    # plot images
+    import matplotlib.pyplot as plt
+    fig,axes = plt.subplots(1,2,figsize = (10,10))
+    fig.subplots_adjust(hspace = 0.1, wspace = 0.1) # adjust vertical spacing
+    
+    # plot images, note that the pixel-values are normalized to the [0.0, 0,1]
+    ax = axes.flat[0]
+    ax.imshow(image[0]/255.0)
+    # msg = "Original Image:\n{0} ({1:.2%})"
+    # xlabel = msg.format(name_source, score_source_org)
+    # ax.set_xlabel(xlabel)
+    
+    # Plot the noisy image.
+    ax = axes.flat[1]
+    ax.imshow(adv_image[0]/ 255.0)
+    # msg = "Image + Noise:\n{0} ({1:.2%})\n{2} ({3:.2%})"
+    # xlabel = msg.format(name_source, score_source, name_target, score_target)
+    # ax.set_xlabel(xlabel)
+
+    # remove ticks from all the plots
+    for ax in axes.flat:
+        ax.set_xticks([])
+        ax.set_yticks([])
+
+    plt.show()
+    
 
