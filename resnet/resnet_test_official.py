@@ -42,8 +42,8 @@ import numpy as np
 # from tensorflow.python.platform import gfile
 GRAPH_PB_PATH = r'E:\resnet_test\export_dir\resnet_50\1547058655'
 image_path = r'E:\resnet_test\test_pictures\chicken.jpg'
-# 9 404
-# 169 389
+
+
 # ===================================
 #         image process
 # ===================================
