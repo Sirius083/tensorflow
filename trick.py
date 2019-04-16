@@ -10,3 +10,6 @@
 self.max_act = tf.reduce_max(cur_feats[:, :, :, self._pick_feat]) # 找到给定channel最大的激活值
 cond =  tf.equal(cur_feats, tf.ones(tf.shape(cur_feats)) * self.max_act) # boolean matrix(same shape as cur_feats)
 out = tf.where(cond, cur_feats, tf.zeros(tf.shape(cur_feats))) # only location with max value non zero
+
+# check whether has GPU
+tf.test.is_built_with_cuda()
