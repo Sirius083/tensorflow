@@ -61,10 +61,8 @@ with tf.gfile.GFile('graph.pb', "wb") as f:
 g2 = load_pb('./graph.pb')
 with g2.as_default():
      flops = tf.profiler.profile(g2, options = tf.profiler.ProfileOptionBuilder.float_operation())
-     print('*** FLOP after freezing /G')
-     print(flops.total_float_ops/1e9)
-     print('*** total params /M')
-     print(params.total_parameters/1e6)
+     print('*** FLOP after freezing {:.3f} /G'.format(flops.total_float_ops/1e9))
+     print('*** total params {:.3f} /M'.format(params.total_parameters/1e6))
 
 # ======================= model_validation_error ==================
 import json
@@ -72,5 +70,7 @@ json_path = os.path.join(model_dir, 'stats.json')
 with open(json_path) as f:
     data = json.load(f)
 val_error = [i['validation_error'] for i in data]
-print('min validation error {0:.0%}'.format(np.min(val_error)))
+print('min validation error {0:.3%}'.format(np.min(val_error)))
+
+
 
