@@ -72,5 +72,5 @@ json_path = os.path.join(model_dir, 'stats.json')
 with open(json_path) as f:
     data = json.load(f)
 val_error = [i['validation_error'] for i in data]
-print('min validation error {0：.0%}'.format(np.min(val_error)))
+print('min validation error {0:.0%}'.format(np.min(val_error)))
 
